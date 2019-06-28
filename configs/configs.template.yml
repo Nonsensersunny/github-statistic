@@ -1,0 +1,14 @@
+http:
+  host:
+  port: 8088
+  allow-origin:
+    - "http://127.0.0.1:8080"
+    - "http://localhost:8080"
+  admin-mail: 1074687883@qq.com
+
+influxdb:
+  host: 127.0.0.1
+  port: 8087
+  dbName: test
+  password:
+  username:
