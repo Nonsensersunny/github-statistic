@@ -1,22 +1,27 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github_statistics/internal/config"
 	"github_statistics/internal/log"
+	"github_statistics/pkg/business"
 	"github_statistics/pkg/db/influxdb"
+	"github_statistics/pkg/db/sqlite"
 	"github_statistics/pkg/rest/v1"
 	"strconv"
-	"github.com/gin-contrib/cors"
 )
 
 func Init() {
 	log.Info("Initializing APP")
 	influxdb.InitInfluxClient()
+	sqlite.InitSqliteClient(business.MigrateDeveloper)
 }
 
 func main() {
 	Init()
+
+	gin.SetMode(gin.DebugMode)
 
 	r := gin.Default()
 	corsConfig := cors.DefaultConfig()

@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // PullRequest github webhook pull_request event
 type PullRequest struct {

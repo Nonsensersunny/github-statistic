@@ -22,6 +22,7 @@ func WebhookCallback(c *gin.Context) {
 		})
 		return
 	}
+	log.Infof("%s", c.Request.Header)
 	data, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -29,6 +30,7 @@ func WebhookCallback(c *gin.Context) {
 		})
 		return
 	}
+	log.Infof("Request body:%s", data)
 	err = github.HandleEvent(c.GetHeader("X-GitHub-Event"), data)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -37,4 +39,7 @@ func WebhookCallback(c *gin.Context) {
 		return
 	}
 
+	c.JSON(http.StatusOK, gin.H{
+		"OK": "OK",
+	})
 }

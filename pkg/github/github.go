@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github_statistics/internal/log"
 	"github_statistics/pkg/model"
+	"time"
 )
 
 type Event interface {
@@ -20,10 +21,10 @@ const (
 )
 
 func HandleEvent(ty string, data []byte) error {
-	log.Infof("%s", data)
 	var (
 		event Event
 		err   error
+		dev   model.Developer
 	)
 
 	switch ty {
@@ -31,31 +32,91 @@ func HandleEvent(ty string, data []byte) error {
 		var info *model.IssueComment
 		info, err = bindIssueComment(data)
 		event = info
+		dev = model.Developer{
+			Id: info.Repository.Owner.ID,
+			Name: info.Repository.Owner.Login,
+			CreatedAt: time.Now(),
+			Project: info.Repository.Name,
+			EventType: EventIssueComment,
+			Action: info.Action,
+		}
 	case EventIssues:
 		var info *model.Issues
 		info, err = bindIssues(data)
 		event = info
+		dev = model.Developer{
+			Id: info.Repository.Owner.ID,
+			Name: info.Repository.Owner.Login,
+			CreatedAt: time.Now(),
+			Project: info.Repository.Name,
+			EventType: EventIssues,
+			Action: info.Action,
+		}
 	case EventPullRequest:
 		var info *model.PullRequest
 		info, err = bindPullRequest(data)
 		event = info
+		dev = model.Developer{
+			Id: info.Repository.Owner.ID,
+			Name: info.Repository.Owner.Login,
+			CreatedAt: time.Now(),
+			Project: info.Repository.Name,
+			EventType: EventPullRequest,
+			Action: info.Action,
+		}
 	case EventPullRequestReview:
 		var info *model.PullRequestReview
 		info, err = bindPullRequestReview(data)
 		event = info
+		dev = model.Developer{
+			Id: info.Repository.Owner.ID,
+			Name: info.Repository.Owner.Login,
+			CreatedAt: time.Now(),
+			Project: info.Repository.Name,
+			EventType: EventPullRequestReview,
+			Action: info.Action,
+		}
 	case EventPullRequestReviewComment:
 		var info *model.PullRequestReviewComment
 		info, err = bindPullRequestReviewComment(data)
 		event = info
+		dev = model.Developer{
+			Id: info.Repository.Owner.ID,
+			Name: info.Repository.Owner.Login,
+			CreatedAt: time.Now(),
+			Project: info.Repository.Name,
+			EventType: EventPullRequestReviewComment,
+			Action: info.Action,
+		}
 	case EventStar:
 		var info *model.Star
 		info, err = bindStar(data)
 		event = info
+		if info.Action == "deleted" {
+
+		} else {
+			dev = model.Developer{
+				Id: info.Repository.Owner.ID,
+				Name: info.Repository.Owner.Login,
+				CreatedAt: time.Now(),
+				Project: info.Repository.Name,
+				EventType: EventStar,
+				Action: info.Action,
+			}
+		}
+	default:
+		log.Infof("Unhandled event:%v", data)
 	}
 	if err != nil {
+		log.Errorf("Categorize type:%s found error:%v", ty, err)
 		return err
 	}
 
+	err = dev.Insert()
+	if err != nil {
+		log.Errorf("insert developer:%v found error:%v", dev, err)
+		return err
+	}
 	log.Info("[Event] will handle:", string(event.Dump()))
 	return nil
 }
@@ -113,4 +174,3 @@ func bindStar(data []byte) (*model.Star, error) {
 	}
 	return &info, nil
 }
-

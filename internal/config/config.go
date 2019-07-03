@@ -7,22 +7,22 @@ import (
 )
 
 type HttpConf struct {
-	Port int `yaml:"port"`
-	Host string `yaml:"host"`
+	Port        int      `yaml:"port"`
+	Host        string   `yaml:"host"`
 	AllowOrigin []string `yaml:"allow-origin"`
-	AdminMail string `yaml:"admin-mail"`
+	DataDir     string   `yaml:"data-dir"`
 }
 
 type InfluxDBConf struct {
 	Host     string `yaml:"host"`
-	Port     int `yaml:"port"`
+	Port     int    `yaml:"port"`
 	DBName   string `yaml:"dbName"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 }
 
 type ServerConfig struct {
-	Http *HttpConf `yaml:"http"`
+	Http     *HttpConf     `yaml:"http"`
 	InfluxDB *InfluxDBConf `yaml:"influxdb"`
 }
 

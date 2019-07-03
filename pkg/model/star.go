@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // Star github webhook start event
 type Star struct {
@@ -12,4 +14,3 @@ type Star struct {
 func (info *Star) Dump() []byte {
 	return jsonMarshal(info)
 }
-

@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // Issues github webhook issues event
 type Issues struct {
@@ -40,4 +42,3 @@ func (info *IssueComment) Dump() []byte {
 func (info *Issues) Dump() []byte {
 	return jsonMarshal(info)
 }
-
